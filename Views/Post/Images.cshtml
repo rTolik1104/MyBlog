@@ -1,0 +1,46 @@
+﻿@model PostIndexVM
+
+<div class="row">
+    @foreach (var item in Model.Posts)
+    {
+        <div class="card" style="width: 18rem;margin-right:10px">
+            <img class="card-img-top" src="@item.PostPictureUrl" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title text-center">@item.Title</h5>
+                <div class="float-md-right">
+                    <a onclick="PostLike('@Url.Action("Like","Post",new { @item.Id }, Context.Request.Scheme)', @item.Id)" class="btn btn-danger text-white" style="margin-right:10px" id="likes@(item.Id)"><i class='bi bi-heart'></i> @item.LikesCount</a>
+                    <a onclick="showInPopup('@Url.Action("Details","Post",new { @item.Id }, Context.Request.Scheme)', 'Comments')" style="margin-right:10px" class="btn btn-warning text-white"><i class="bi bi-chat-left"></i> @item.RepliesCount</a>
+                    <a asp-controller="PostReply" asp-action="Create" asp-route-id="@item.Id" class="btn btn-primary">Reply</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<script>
+    PostLike = (url, id) => {
+        var txt = "";
+        $.ajax({
+            type: 'Post',
+            url: url,
+            success: function (res) {
+                txt += "<i class='bi bi-heart'></i> " + res;
+                $("#likes" + id).html(txt);
+            }
+        })
+    }
+
+    showInPopup = (url, title) => {
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function (res) {
+                $('#form-modal .modal-body').html(res);
+                $('#form-modal .modal-title').html(title);
+                $('#form-modal').modal('toggle');
+            }
+        })
+    }
+</script>
+

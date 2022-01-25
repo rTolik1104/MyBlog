@@ -1,0 +1,154 @@
+﻿@model PostListVM
+@{
+    Layout = null;
+}
+
+@if (Model.PostPictureUrl == null)
+{
+    <div class="card" style="margin-bottom:10px">
+        <div class="card-header">
+            @Model.Title
+            <div class="float-right">
+                <img class="rounded-circle" style="margin-right:10px" src="~/Images/Ava-pats-12.jpg" width="40px" height="40px" />
+                <div class="float-md-right">
+                    <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.Authorid"><h4>@Model.AuthorName</h4></a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>@Model.PostContent</p>
+                <footer class="blockquote-footer">
+                    <span class="postDate">@Model.DatePosted</span>
+                    <div class="float-md-right">
+                        <a style="margin-right:10px" id="likesR"><i class='bi bi-heart'></i> @Model.LikesCount</a>
+                    </div>
+                </footer>
+            </blockquote>
+        </div>
+    </div>
+    <hr />
+    @if (Model.PostReplies.Count() != 0)
+    {
+        <div class="comments">
+            <h2>Comments</h2>
+            @foreach (var item in Model.PostReplies)
+            {
+                <div class="card" style="margin-bottom:10px">
+                    <div class="card-header">
+                        <div class="float-left">
+                            <img class="rounded-circle" style="margin-right:10px" src="~/Images/Ava-pats-12.jpg" width="40px" height="40px" />
+                            <div class="float-md-right">
+                                <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.AuthorId"><h4>@item.AuthorName</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>@item.PostContent</p>
+                            <footer class="blockquote-footer">
+                                <span class="postDate">@item.DatePosted</span>
+                                <div class="float-md-right">
+                                    <a onclick="PostLikeReply('@Url.Action("Like","PostReply",new { @item.Id }, Context.Request.Scheme)', @item.Id)" class="btn btn-danger text-white" style="margin-right:10px" id="likesR@(item.Id)"><i class='bi bi-heart'></i> @item.LikesCount</a>
+                                </div>
+                            </footer>
+                        </blockquote>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <h3>No Comments!</h3>
+        <div class="float-right">
+            <a asp-controller="PostReply" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary">Reply</a>
+        </div>
+    }
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <img class="card-img-top" width="400px" height="400px" src="@Model.PostPictureUrl" alt="Card image cap">
+        </div>
+        <div class="col-md-6">
+            <div class="card" style="margin-bottom:10px">
+                <div class="card-header">
+                    @Model.Title
+                    <div class="float-right">
+                        <img class="rounded-circle" style="margin-right:10px" src="~/Images/Ava-pats-12.jpg" width="40px" height="40px" />
+                        <div class="float-md-right">
+                            <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.Authorid"><h4>@Model.AuthorName</h4></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>@Model.PostContent</p>
+                        <footer class="blockquote-footer">
+                            <span class="postDate">@Model.DatePosted</span>
+                            <div class="float-md-right">
+                                <a style="margin-right:10px" id="likes"><i class='bi bi-heart'></i> @Model.LikesCount</a>
+                            </div>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+            <hr />
+            @if (Model.PostReplies.Count() != 0)
+            {
+                <div class="comments">
+                    <h2>Comments</h2>
+                    @foreach (var item in Model.PostReplies)
+                    {
+                        <div class="card" style="margin-bottom:10px">
+                            <div class="card-header">
+                                <div class="float-left">
+                                    <img class="rounded-circle" style="margin-right:10px" src="~/Images/Ava-pats-12.jpg" width="40px" height="40px" />
+                                    <div class="float-md-right">
+                                        <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.AuthorId"><h4>@item.AuthorName</h4></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <blockquote class="blockquote mb-0">
+                                    <p>@item.PostContent</p>
+                                    <footer class="blockquote-footer">
+                                        <span class="postDate">@item.DatePosted</span>
+                                        <div class="float-md-right">
+                                            <a onclick="PostLikeReply('@Url.Action("Like","PostReply",new { @item.Id }, Context.Request.Scheme)', @item.Id)" class="btn btn-danger text-white" style="margin-right:10px" id="likesR@(item.Id)"><i class='bi bi-heart'></i> @item.LikesCount</a>
+                                        </div>
+                                    </footer>
+                                </blockquote>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <h3>No Comments!</h3>
+                <div class="float-right">
+                    <a asp-controller="PostReply" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary">Reply</a>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<script>
+    PostLikeReply = (url, id) => {
+        var txt = "";
+        $.ajax({
+            type: 'Post',
+            url: url,
+            success: function (res) {
+                txt += "<i class='bi bi-heart'></i> " + res;
+                $("#likesR" + id).html(txt);
+            }
+        })
+    }
+</script>
+
+

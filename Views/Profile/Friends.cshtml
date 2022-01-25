@@ -1,0 +1,31 @@
+﻿@model IEnumerable<AppUser>
+
+<form asp-controller="Search" asp-action="Index">
+    <div class="search-wrapper">
+        <span class="las la-search"></span>
+        <input type="search" placeholder="Search here your friends" name="searchString"/>
+    </div>
+</form>
+
+@if (Model.Count()!=0)
+{
+    <div class="row" >
+        @foreach (var user in Model)
+        {
+            <div class="row" style="margin-top: 15px; margin-right: 10px;padding:5px">
+                <div class="card" style="width: 18rem;margin-right:10px">
+                    <img class="card-img-top" src="@user.ProfileImgUrl" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@user.UserName</h5>
+                        <p>@user.About</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+}
+else
+{
+    <h2 class="text-center" style="margin-top:25px">You don't have any Friends!</h2>
+}

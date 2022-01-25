@@ -1,0 +1,40 @@
+﻿@model PostReplyModel
+
+<div class="container">
+    <div>
+        <div>
+            Reply | @Model.AuthorName's Post
+            <div class="float-right" style="margin-bottom:10px">
+                <a asp-controller="Post" asp-action="Index" class="btn btn-warning float-right">Back To Post</a>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="postReply">
+            <h3>
+                @Model.PostTitle
+            </h3>
+            <p>@Model.PostContent</p>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="createPostSection">
+            <div class="authorBlock">
+                You're submiting this Reply as @Model.AuthorName
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="form-group">
+                    <label asp-for="PostReplyContent">Reply: </label>
+                    <textarea asp-for="PostReplyContent" class="form-control" rows="8" cols="150" placeholder="You're reply..."></textarea>
+                    <span asp-validation-for="PostReplyContent" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-warning">Submit Post</button>
+                <input asp-for="AuthorId" type="hidden" />
+                <input asp-for="PostId" type="hidden" />
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,127 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> userManager
+@inject SignInManager<AppUser> sigInManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["title"] - myblog</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/StyleSheet1.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h1><span class="lab la-accusoft"></span><span>MyBlog</span></h1>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a asp-controller="Post" asp-action="Index" class="active">
+                        <span><img src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-list-morning-routine-flatart-icons-outline-flatarticons.png" /></span>
+                        <span>Лента</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Post" asp-action="Images">
+                        <span><img src="https://img.icons8.com/ios/50/000000/stack-of-photos--v1.png" /></span>
+                        <span>Фото</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Profile" asp-action="Friends">
+                        <span><img src="https://img.icons8.com/external-sbts2018-mixed-sbts2018/58/000000/external-group-social-media-basic-1-sbts2018-mixed-sbts2018.png" /></span>
+                        <span>Друзья</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Profile" asp-action="Details">
+                        <span><img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" /></span>
+                        <span>Профиль</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span><img src="https://img.icons8.com/external-outline-satawat-anukul/64/000000/external-check-business-outline-satawat-anukul.png" /></span>
+                        <span>Задачи</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2>
+                Welcome!! Have a nice day.
+            </h2>
+
+            <form asp-controller="Search" asp-action="Index">
+                <div class="search-wrapper">
+                    <span class="las la-search"></span>
+                    <input type="search" placeholder="Search here..." name="searchString"/>
+                </div>
+            </form>
+            
+
+            <div class="user-wrapper">
+                @if (!sigInManager.IsSignedIn(User))
+                {
+                    <div class="float-md-right">
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success my-2 my-sm-0" style="margin-right:5px">Sign In</a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-warning my-2 my-sm-0">Register</a>
+                    </div>
+                }
+                @if (sigInManager.IsSignedIn(User))
+                {
+                    <img src="" width="40px" height="40px" />
+                    <div>
+                        <h4>
+                            <a asp-controller="Profile" asp-action="Details" asp-route-id="@userManager.GetUserId(User)">@userManager.GetUserName(User)</a>
+                        </h4>
+                        <small>Admin</small>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <div class="float-md-right" style="margin-left:20px">
+                            <button type="submit" class="btn btn-outline-danger">
+                                Sign Out
+                            </button>
+                        </div>
+                    </form>
+                }
+
+            </div>
+
+        </header>
+
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="form-modal">
+        <div class="modal-dialog" role="document" style="width:600px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
