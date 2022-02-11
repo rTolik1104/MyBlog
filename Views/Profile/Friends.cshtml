@@ -1,29 +1,34 @@
 ﻿@model IEnumerable<AppUser>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/friendsSite.css" />
+</head>
 
-<form asp-controller="Search" asp-action="Index">
-    <div class="search-wrapper">
-        <span class="las la-search"></span>
-        <input type="search" placeholder="Search here your friends" name="searchString"/>
-    </div>
+<form asp-controller="Profile" asp-action="Friends">
+    <input type="text" class="header_search desktop-only" name="SearchString" placeholder="Search in blog posts">
+    <i class="bi bi-search" id="searchicon"></i>
 </form>
 
 @if (Model.Count()!=0)
 {
-    <div class="row" >
+    <div class="row">
         @foreach (var user in Model)
         {
-            <div class="row" style="margin-top: 15px; margin-right: 10px;padding:5px">
-                <div class="card" style="width: 18rem;margin-right:10px">
-                    <img class="card-img-top" src="@user.ProfileImgUrl" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">@user.UserName</h5>
-                        <p>@user.About</p>
-                    </div>
+            string imagePath = "";
+            if (user.ProfileImgUrl!=null)
+            {
+                imagePath = "/Images/" + user.ProfileImgUrl; 
+            }
+            <div class="row" style="margin-right:10px;margin-top:25px; padding:10px">
+                 <div class="container">
+                  <div class="avatar-flip">
+                    <img src="@imagePath" height="150" width="150">
+                    <img src="@imagePath" height="150" width="150">
+                  </div>
+                  <h2>@user.UserName</h2>
                 </div>
             </div>
         }
     </div>
-    
 }
 else
 {

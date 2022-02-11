@@ -8,11 +8,12 @@ namespace MyBlog.Data.Interfaces
 {
     public interface IFriendServices
     {
-        IEnumerable<Friend> GetFriendsByAccountId(string id);
+        Task<IEnumerable<Friend>> GetFriendsByAccountId(string id);
 
         IEnumerable<AppUser> GetFriends(string id);
         IEnumerable<Post> GetFriendsPosts(string id);
 
         Task AddFriend(Friend friend);
+        bool IsFriend(AppUser user);
     }
 }

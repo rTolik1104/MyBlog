@@ -17,12 +17,15 @@ namespace MyBlog.Controllers
         private readonly IUserServices _userServices;
         private readonly UserManager<AppUser> _userManager;
 
+        public static Dictionary<int, List<AppUser>> _likesReply = new();
+
         public PostReplyController(IPostservices postservices,IUserServices userServices,UserManager<AppUser> userManager)
         {
             _postservices = postservices;
             _userServices = userServices;
             _userManager = userManager;
         }
+
 
         [Authorize]
         public async Task<IActionResult> Create(int id)
@@ -53,34 +56,10 @@ namespace MyBlog.Controllers
 
             var reply = BuildReply(model, user);
 
-            await _postservices.AddReply(reply);
+            await _postservices.AddPostReply(reply);
 
             return RedirectToAction("Index","Post");
         }
-
-        public static Dictionary<int, List<AppUser>> _likesReply = new();
-        [HttpPost]
-        public async Task<IActionResult> Like(int id)
-        {
-            var userId = _userManager.GetUserId(User);
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (!_likesReply.ContainsKey(id))
-            {
-                _likesReply.Add(id, new List<AppUser>());
-            }
-            
-            var user1 = _likesReply[id].FirstOrDefault(x => x.UserName == user.UserName);
-
-            if (user1 == null)
-            {
-                _likesReply[id].Add(user);
-                await _postservices.IncrementReplyLikesCount(id);
-            }
-
-            return Json(_postservices.GetReplyById(id).LikesCount);
-        }
-
         private PostReply BuildReply(PostReplyModel model, AppUser user)
         {
             var post = _postservices.GetByid(model.PostId);
@@ -92,6 +71,28 @@ namespace MyBlog.Controllers
                 Created = DateTime.Now,
                 User = user
             };
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Like(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (!_likesReply.ContainsKey(id))
+            {
+                _likesReply.Add(id, new List<AppUser>());
+            }
+            
+            var likedUser = _likesReply[id].FirstOrDefault(x => x.UserName == user.UserName);
+
+            if (likedUser == null)
+            {
+                _likesReply[id].Add(user);
+                await _postservices.IncrementPostReplyLikesCount(id);
+            }
+
+            return Json(_postservices.GetReplyById(id).LikesCount);
         }
     }
 }

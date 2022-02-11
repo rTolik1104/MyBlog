@@ -1,14 +1,28 @@
-﻿@model IEnumerable<AppUser>
-
-<div class="row">
-    @foreach (var user in Model)
+﻿@model ProfileListVM
+@{
+    string imagePath="";
+}
+<div class="row" style="margin-top:100px">
+    @foreach (var user in Model.Profiles)
     {
+        if (user.ProfileImgName != null)
+        {
+            imagePath = "/Images/" + user.ProfileImgName;
+        }
         <div class="card" style="width: 18rem;margin-bottom:15px;margin-right:15px">
-            <img class="card-img-top" src="@user.ProfileImgUrl">
+            <img class="card-img-top" src="@imagePath">
             <div class="card-body">
                 <h5 class="card-title">@user.UserName</h5>
                 <p class="card-text">@user.About</p>
-                <a asp-controller="Profile" asp-action="AddFriend" asp-route-id="@user.Id" class="btn btn-success">Add to Friend</a>
+                @if (user.isFriend)
+                {
+                    <a class="btn btn-success">Is Friend</a>
+                }
+                else
+                {
+                    <a asp-controller="Profile" asp-action="AddFriend" asp-route-id="@user.UserId" class="btn btn-success">Add to Friend</a>
+                }
+                
             </div>
         </div>
     }

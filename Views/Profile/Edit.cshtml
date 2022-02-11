@@ -1,6 +1,11 @@
-﻿@model AppUser
-@{ 
+﻿@model EditVM
+@{
     Layout = null;
+    string imagePath = "";
+    if (Model != null)
+    {
+        imagePath = "/Images/" + Model.ProfileImageName;
+    }
 }
 <head>
     <title>Profile Edit Page</title>
@@ -9,7 +14,7 @@
 </head>
 
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="projects">
         <div class="card">
@@ -32,12 +37,24 @@
                     </div>
                 </div>
                 <hr>
+                @if (Model.ProfileImageName != null)
+                {
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Profile Image</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            <img src="@imagePath" asp-append-version="true" style="width:200px;height:200px" />
+                        </div>
+                    </div>
+                }
+                <hr>
                 <div class="row">
                     <div class="col-sm-3">
-                        <h6 class="mb-0">Profile Picture URL</h6>
+                        <h6 class="mb-0">Profile Image File</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        <input asp-for="ProfileImgUrl" class="form-control" />
+                        <input asp-for="ProfileImgFile" accept="image/*" type="file" class="form-control" />
                     </div>
                 </div>
                 <hr>
@@ -59,15 +76,8 @@
                     </div>
                 </div>
                 <hr />
-                <div class="row">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">About</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input asp-for="AboutTitle" class="form-control" />
-                    </div>
-                </div>
                 <input type="hidden" asp-for="Id" />
+                <input hidden asp-for="ProfileImageName" />
             </div>
         </div>
     </div>

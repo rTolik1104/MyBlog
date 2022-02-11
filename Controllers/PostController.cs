@@ -19,6 +19,7 @@ namespace MyBlog.Controllers
         private readonly IFriendServices _friendServices;
 
         private static UserManager<AppUser> _userManager;
+        public static Dictionary<int, List<AppUser>> _likes = new();
 
         public PostController(IFriendServices friendServices, IPostservices postservices,IUserServices userServices, UserManager<AppUser> userManager)
         {
@@ -29,11 +30,16 @@ namespace MyBlog.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString)
         {
             var posts = new List<Post>();
             var user = await _userManager.GetUserAsync(User);
             posts = _friendServices.GetFriendsPosts(user.Id).ToList();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                posts = _friendServices.GetFriendsPosts(user.Id).Where(x=>x.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase) || x.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase) || x.User.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
 
             var postList = posts.Select(p => new PostListVM
             {
@@ -52,7 +58,7 @@ namespace MyBlog.Controllers
 
             var model = new PostIndexVM
             {
-                Posts = postList.ToList()
+                Posts = postList.OrderByDescending(x=>x.DatePosted).ToList()
             };
             return View(model);
         }
@@ -79,7 +85,6 @@ namespace MyBlog.Controllers
             return View(model);
         }
 
-        
         private IEnumerable<PostReplyModel> BuildPostReplies(IEnumerable<PostReply> postReplies)
         {
             return postReplies.Select(r => new PostReplyModel
@@ -104,6 +109,7 @@ namespace MyBlog.Controllers
             };
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> CreatePost(CreatePostModel model)
         {
@@ -113,13 +119,12 @@ namespace MyBlog.Controllers
             if (ModelState.IsValid)
             {
                 var post = BuildPost(model, user);
-                await _postservices.Add(post);
+                await _postservices.AddPost(post);
             }
             else
             {
                 ModelState.AddModelError("", "Invalid create post");
             }
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -128,7 +133,7 @@ namespace MyBlog.Controllers
             return new Post
             {
                 Title = model.Title,
-                PostPictureUrl = model.PostPictureUrl,
+                PostPictureUrl = _postservices.SaveImage(model.ImageFile),
                 Description = model.Content,
                 Created=DateTime.Now,
                 User = user
@@ -139,7 +144,10 @@ namespace MyBlog.Controllers
         public IActionResult Images()
         {
             var posts = new List<Post>();
-            posts = _postservices.GetAllPosts().Where(x=>x.PostPictureUrl!=null).OrderByDescending(x => x.Id).ToList();
+            posts = _postservices.GetAllPosts()
+                .Where(x=>x.PostPictureUrl!=null)
+                .OrderByDescending(x => x.Id)
+                .ToList();
 
             var postList = posts.Select(p => new PostListVM
             {
@@ -162,8 +170,7 @@ namespace MyBlog.Controllers
             };
             return View(model);
         }
-
-        public static Dictionary<int, List<AppUser>> _likes = new();
+        
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Like(int id)
@@ -176,11 +183,11 @@ namespace MyBlog.Controllers
                 _likes.Add(id, new List<AppUser>());
             }
 
-            var user1 = _likes[id].FirstOrDefault(x => x.UserName == user.UserName);
-            if (user1==null)
+            var likedUser = _likes[id].FirstOrDefault(x => x.UserName == user.UserName);
+            if (likedUser == null)
             {
                 _likes[id].Add(user);
-                await _postservices.IncrementLikesCount(id);
+                await _postservices.IncrementPostLikesCount(id);
             }
 
             return Json(_postservices.GetByid(id).LikesCount);

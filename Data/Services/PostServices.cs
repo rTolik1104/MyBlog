@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging;
 using MyBlog.Data.Interfaces;
 using MyBlog.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,28 +16,43 @@ namespace MyBlog.Data.Services
     public class PostServices : IPostservices
     {
         private readonly AppDbContext _dbContext;
+        private readonly IWebHostEnvironment _webHost;
+        private readonly ILogger _logger;
 
-        public PostServices(AppDbContext dbContext)
+        public PostServices(AppDbContext dbContext,IWebHostEnvironment webHost,ILogger<PostServices> logger)
         {
             _dbContext = dbContext;
-        }
-        public async Task Add(Post post)
-        {
-            _dbContext.Posts.Add(post);
-            await _dbContext.SaveChangesAsync();
+            _webHost=webHost;
+            _logger=logger;
         }
 
-        public async Task AddReply(PostReply postReply)
+
+        public async Task AddPost(Post post)
         {
-            _dbContext.Add(postReply);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                _dbContext.Posts.Add(post);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogInformation("Error:" + ex.Message);
+                throw;
+            }
         }
 
-        public async Task Delete(int id)
+        public async Task AddPostReply(PostReply postReply)
         {
-            var post =await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == id);
-            _dbContext.Posts.Remove(post);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                _dbContext.Add(postReply);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Error:" + ex.Message);
+                throw;
+            }
         }
 
         public IEnumerable<Post> GetAllPosts()
@@ -60,15 +79,10 @@ namespace MyBlog.Data.Services
                 .First();
         }
 
-        public IEnumerable<Post> GetFilterdPosts(int id, string search)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Post> GetFilterdPosts(string search)
+        public IEnumerable<Post> GetFilterdPosts(int? id, string search)
         {
             return GetAllPosts()
-                .Where(p => p.Title.Contains(search) 
+                .Where(p => p.Title.Contains(search)
                 || p.Description.Contains(search));
         }
 
@@ -77,7 +91,7 @@ namespace MyBlog.Data.Services
             return GetAllPosts().Where(u => u.User.Id == id);
         }
 
-        public async Task IncrementLikesCount(int id)
+        public async Task IncrementPostLikesCount(int id)
         {
             var post = GetByid(id);
             post.LikesCount = GetIncrement(post.LikesCount);
@@ -89,7 +103,7 @@ namespace MyBlog.Data.Services
             return likesCount + 1;
         }
 
-        public async Task IncrementReplyLikesCount(int id)
+        public async Task IncrementPostReplyLikesCount(int id)
         {
             var postReply = GetReplyById(id);
             postReply.LikesCount = GetReplyIncrement(postReply.LikesCount);
@@ -101,12 +115,66 @@ namespace MyBlog.Data.Services
             return likesCount + 1;
         }
 
-        public async Task Update(int id, Post post)
+        public async Task UpdatePost(int id, Post post)
         {
-            EntityEntry entityEntry = _dbContext.Entry<Post>(post);
-            entityEntry.State = EntityState.Modified;
+            try
+            {
+                EntityEntry entityEntry = _dbContext.Entry<Post>(post);
+                entityEntry.State = EntityState.Modified;
 
-            await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Error:" + ex.Message);
+                throw;
+            }
+        }
+
+        public string SaveImage(IFormFile newFile)
+        {
+            string UniqueName = string.Empty;
+            if(newFile.FileName !=null)
+            {
+                string uploadFolder = Path.Combine(_webHost.WebRootPath, "Images");
+                UniqueName = Guid.NewGuid().ToString() + "_" + newFile.FileName;
+                string filePath=Path.Combine(uploadFolder, UniqueName);
+
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    newFile.CopyTo(fileStream);
+                    fileStream.Close();
+                }
+            }
+
+            return UniqueName;
+        }
+
+        public async Task DeletePost(int id)
+        {
+            Post post = await _dbContext.Posts.FirstOrDefaultAsync(x => x.Id == id);
+            try
+            {
+                if (post.PostPictureUrl != null)
+                {
+                    string uploadFolder = Path.Combine(_webHost.WebRootPath, "Images");
+                    string filePath = Path.Combine(uploadFolder, post.PostPictureUrl);
+
+                    FileInfo fileInfo = new FileInfo(filePath);
+                    if (fileInfo.Exists)
+                    {
+                        fileInfo.Delete();
+                    }
+                }
+                _dbContext.Posts.Remove(post);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Error:" + ex.Message);
+                throw;
+            }
+            
         }
     }
 }

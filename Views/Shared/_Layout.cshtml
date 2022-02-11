@@ -2,6 +2,14 @@
 @inject UserManager<AppUser> userManager
 @inject SignInManager<AppUser> sigInManager
 
+
+@{
+    string imagePath = "";
+    if(sigInManager.IsSignedIn(User) && userManager.GetUserAsync(User).Result.ProfileImgUrl!=null)
+    {
+        imagePath = "/Images/" + userManager.GetUserAsync(User).Result.ProfileImgUrl;
+    }
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,82 +18,34 @@
     <title>@ViewData["title"] - myblog</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/StyleSheet1.css" />
+    <link rel="stylesheet" href="~/css/StyleSheet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-brand">
-            <h1><span class="lab la-accusoft"></span><span>MyBlog</span></h1>
-        </div>
-        <div class="sidebar-menu">
-            <ul>
-                <li>
-                    <a asp-controller="Post" asp-action="Index" class="active">
-                        <span><img src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-list-morning-routine-flatart-icons-outline-flatarticons.png" /></span>
-                        <span>Лента</span>
-                    </a>
-                </li>
-                <li>
-                    <a asp-controller="Post" asp-action="Images">
-                        <span><img src="https://img.icons8.com/ios/50/000000/stack-of-photos--v1.png" /></span>
-                        <span>Фото</span>
-                    </a>
-                </li>
-                <li>
-                    <a asp-controller="Profile" asp-action="Friends">
-                        <span><img src="https://img.icons8.com/external-sbts2018-mixed-sbts2018/58/000000/external-group-social-media-basic-1-sbts2018-mixed-sbts2018.png" /></span>
-                        <span>Друзья</span>
-                    </a>
-                </li>
-                <li>
-                    <a asp-controller="Profile" asp-action="Details">
-                        <span><img src="https://img.icons8.com/ios/50/000000/user-male-circle.png" /></span>
-                        <span>Профиль</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <span><img src="https://img.icons8.com/external-outline-satawat-anukul/64/000000/external-check-business-outline-satawat-anukul.png" /></span>
-                        <span>Задачи</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <header>
-            <h2>
-                Welcome!! Have a nice day.
-            </h2>
-
-            <form asp-controller="Search" asp-action="Index">
-                <div class="search-wrapper">
-                    <span class="las la-search"></span>
-                    <input type="search" placeholder="Search here..." name="searchString"/>
+    <div class="header">
+        <div class="header_content">
+            <span class="logo">
+                <i class="bi bi-slack"></i>
+                My<span class="logo-book">Blog</span>
+            </span>
+            <div>
+                <form asp-controller="Search" asp-action="Index">
+                    <input type="text" class="header_search desktop-only" name="SearchString" placeholder="Search your friends...">
+                    <i class="bi bi-search" id="searchicon"></i>
+                </form>
+            </div>
+           
+            @if (!sigInManager.IsSignedIn(User))
+            {
+                <div class="float-md-right" style="margin-right:15px">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success my-2 my-sm-0" style="margin-right:5px">Sign In</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-warning my-2 my-sm-0">Register</a>
                 </div>
-            </form>
-            
-
-            <div class="user-wrapper">
-                @if (!sigInManager.IsSignedIn(User))
-                {
-                    <div class="float-md-right">
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success my-2 my-sm-0" style="margin-right:5px">Sign In</a>
-                        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-warning my-2 my-sm-0">Register</a>
-                    </div>
-                }
-                @if (sigInManager.IsSignedIn(User))
-                {
-                    <img src="" width="40px" height="40px" />
-                    <div>
-                        <h4>
-                            <a asp-controller="Profile" asp-action="Details" asp-route-id="@userManager.GetUserId(User)">@userManager.GetUserName(User)</a>
-                        </h4>
-                        <small>Admin</small>
-                    </div>
+            }
+            @if (sigInManager.IsSignedIn(User))
+            {
+                <div class="float-md-right" style="margin-right:15px">
                     <form asp-controller="Account" asp-action="Logout" method="post">
                         <div class="float-md-right" style="margin-left:20px">
                             <button type="submit" class="btn btn-outline-danger">
@@ -93,12 +53,80 @@
                             </button>
                         </div>
                     </form>
-                }
+                </div>
+            }
 
+        </div>
+  
+        <div class="sidebar-container" id="sidebar">
+            @if (sigInManager.IsSignedIn(User))
+            {
+                <img src="@imagePath" class="avatar">
+                <div class="user-welcomer">
+                    Welcome <br>
+                    <span class="username">@userManager.GetUserName(User)</span>
+                    <div class="user-buttons">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="user-welcomer">
+                    Welcome <br>
+                    <span class="username">Please Login</span>
+                    <div class="user-buttons">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+            }
+            
+  
+            <div class="seperator" clear="all"></div>
+  
+            <div class="sidebar-content">
+                <ul>
+                    <li>
+                        <a asp-controller="Post" asp-action="Index" class="active">
+                            <span><img src="https://img.icons8.com/ios/64/000000/news.png"/></span>
+                            <span class="username">Ribbon</span>
+                        </a>
+                    </li>
+                    <div class="seperator" clear="all"></div>
+                    <li>
+                        <a asp-controller="Post" asp-action="Images">
+                            <span><img src="https://img.icons8.com/wired/64/000000/stack-of-photos.png"/></span>
+                            <span class="username">Images</span>
+                        </a>
+                    </li>
+                    <div class="seperator" clear="all"></div>
+                    <li>
+                        <a asp-controller="Profile" asp-action="Friends">
+                            <span><img src="https://img.icons8.com/wired/64/000000/user-group-man-woman.png"/></span>
+                            <span class="username">Friends</span>
+                        </a>
+                    </li>
+                    <div class="seperator" clear="all"></div>
+                    <li>
+                        <a asp-controller="Profile" asp-action="Details">
+                            <span><img src="https://img.icons8.com/wired/64/000000/user-male.png"/></span>
+                            <span class="username">Profile</span>
+                        </a>
+                    </li>
+                    <div class="seperator" clear="all"></div>
+                    <li>
+                        <a href="#">
+                            <span><img src="https://img.icons8.com/wired/64/000000/bookmark--v2.png"/></span>
+                            <span class="username">Tasks</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="seperator"></div>
             </div>
+        </div>
+    </div>
 
-        </header>
-
+    <div class="page_content" style="margin-top:100px">
         <main>
             @RenderBody()
         </main>

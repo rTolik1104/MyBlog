@@ -1,42 +1,35 @@
 ﻿@model PostIndexVM
 
-<form asp-controller="Search" asp-action="Posts">
-    <div class="search-wrapper">
-        <span class="las la-search"></span>
-        <input type="search" placeholder="Search here posts" name="searchString" />
-    </div>
+<form asp-controller="Post" asp-action="Index">
+    <input type="text" class="header_search desktop-only" name="SearchString" placeholder="Search in blog posts">
+    <i class="bi bi-search" id="searchicon"></i>
 </form>
+
 
 @foreach (var item in Model.Posts)
 {
-    <div class="card" style="margin-bottom:10px;margin-top:10px">
-        <div class="card-header">
-            @item.Title
-            <div class="float-right">
-                <img class="rounded-circle" style="margin-right:10px" src="~/Images/Ava-pats-12.jpg" width="40px" height="40px" />
-                <div class="float-md-right">
-                    <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.Authorid"><h4>@item.AuthorName</h4></a>
-                </div>
-            </div>
+    string imagePath = "/Images/" + item.PostPictureUrl;
+    <div class="post_container">
+        <img src="~/Images/Ava-pats-12.jpg" class="avatar" style="height:50px;width:50px;"> 
+    
+        <div class="post_content">
+            <span class="link">@item.AuthorName</span>: @item.Title
+            <br><small>@item.DatePosted</small>
         </div>
-        <div class="card-body">
-            @if (item.PostPictureUrl != null)
-            {
-                <img class="card-img-top img-fluid" width="400px" height="400px" src="@item.PostPictureUrl" alt="Card image cap">
-            }
-            <blockquote cl5ss="blockquote mb-0" style="margin-top:10px">
-                <p>@item.PostContent</p>    
-                <footer class="blockquote-footer">
-                    <span class="postDate">@item.DatePosted</span>
-                    <div class="float-md-right">
-                        <a onclick="PostLike('@Url.Action("Like","Post",new { @item.Id }, Context.Request.Scheme)', @item.Id)" class="btn btn-danger text-white" style="margin-right:10px" id="likes@(item.Id)"><i class='bi bi-heart'></i> @item.LikesCount</a>
-                        <a onclick="showInPopup('@Url.Action("Details","Post",new { @item.Id }, Context.Request.Scheme)', 'Comments')" style="margin-right:10px" class="btn btn-warning text-white"><i class="bi bi-chat-left"></i> @item.RepliesCount</a>
-                        <a asp-controller="PostReply" asp-action="Create" asp-route-id="@item.Id" class="btn btn-primary">Reply</a>
-                    </div>
-                </footer>
-            </blockquote>
+    
+        <br clear="all"><br>
+        @item.PostContent
+        <br>
+        @if (item.PostPictureUrl != null)
+        {
+            <img src="@imagePath" class="border-r">
+        }
+        <div class="reacts">
+            <a onclick="PostLike('@Url.Action("Like","Post",new { @item.Id }, Context.Request.Scheme)', @item.Id)" class="btn btn-danger text-white" style="margin-right:10px" id="likes@(item.Id)"><i class='bi bi-heart'></i> @item.LikesCount</a>
+            <a onclick="showInPopup('@Url.Action("Details","Post",new { @item.Id }, Context.Request.Scheme)', 'Comments')" style="margin-right:10px" class="btn btn-warning text-white"><i class="bi bi-chat-left"></i> @item.RepliesCount</a>
+            <a asp-controller="PostReply" asp-action="Create" asp-route-id="@item.Id" class="btn btn-primary">Reply</a>
         </div>
-    </div>
+   </div>
 }
 
 <div style="position: fixed; right: 25px; bottom: 25px;" class="text-white">

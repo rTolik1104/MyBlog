@@ -1,100 +1,544 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Roboto:ital,wght@0,100;0,300;1,100;1,300&display=swap');
+﻿@media only screen and (max-width: 800px) {
 
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  list-style: none;
-  text-decoration: none;
-  font-family: 'Josefin Sans', sans-serif;
-}
+    .mobile_search {
+        display: block !important;
+    }
 
-body{
-   background-color: #f3f5f9;
-}
+    .desktop-only {
+        display: none !important;
+    }
 
-.wrapper{
-  display: flex;
-  position: relative;
-}
+    .header .fa-search {
+        display: none !important;
+    }
 
-.wrapper .sidebar{
-  width: 300px;
-  height: 100%;
-  background: #4b4276;
-  padding: 30px 0px;
-  position: fixed;
-}
+    .sidebar-container {
+        width: 100% !important;
+        border-bottom: 1px solid #e4e8e9 !important;
+        border-right: none !important;
+        box-shadow: none !Important;
+    }
 
-.wrapper .sidebar h2{
-  color: #fff;
-  text-align: center;
-  margin-bottom: 30px;
-}
+    #sidebar {
+        left: -1600px;
+    }
 
-.wrapper .sidebar ul li{
-  padding: 15px;
-  border-bottom: 1px solid #bdb8d7;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  border-top: 1px solid rgba(255,255,255,0.05);
-}    
+    .page_content {
+        margin: 10px !important;
+        margin-top: 80px !important;
+    }
 
-.wrapper .sidebar ul li a{
-  color: #bdb8d7;
-  display: block;
-}
+    .header_content {
+        margin-left: 0px !important;
+    }
 
-.wrapper .sidebar ul li a .fas{
-  width: 25px;
-}
+    .logo {
+        width: 100% !important;
+        text-align: left;
+    }
 
-.wrapper .sidebar ul li:hover{
-  background-color: #594f8d;
-}
-    
-.wrapper .sidebar ul li:hover a{
-  color: #fff;
-}
- 
-.wrapper .sidebar .social_media{
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-}
+    #toggle_button {
+        width: 19px;
+        height: 20px;
+        padding: 10px;
+        padding-top: 18px;
+        padding-bottom: 5px;
+        border-radius: 0px 0px 50px 50px;
+        background: #fff;
+        text-align: center;
+        color: #001f2b;
+        cursor: pointer;
+    }
 
-.wrapper .sidebar .social_media a{
-  display: block;
-  width: 40px;
-  background: #594f8d;
-  height: 40px;
-  line-height: 45px;
-  text-align: center;
-  margin: 0 5px;
-  color: #bdb8d7;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
+    .toggle_button_parent {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        padding: 0px 5px;
+    }
 
-.wrapper .main_content{
-  width: 100%;
-  margin-left: 300px;
-}
+    .header_search {
+        width: 100% !important;
+        box-sizing: border-box;
+        margin-left: 0px !important;
+        margin-bottom: 20px !important;
+        padding: 15px !important;
+        background: #dde8ec !important;
+        align-content:center;
+    }
 
-.wrapper .main_content .header{
-  padding:20px;
-  background: #fff;
-  color: #717171;
-  border-bottom: 1px solid #e0e4e8;
+    #searchicon {
+        margin-top: 14px !important;
+    }
+
+    .gallery_img {
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+        margin: 0px !important;
+        margin-top: 15px !important;
+    }
 }
 
-.wrapper .main_content .info{
-  margin: 20px;
-  color: #717171;
-  line-height: 25px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+    background: #f0f6f8;
+    font-family: 'Roboto', sans-serif;
+    height: 2000px;
+    font-weight: 300;
+    color: #555;
 }
 
-.wrapper .main_content .info div{
-  margin-bottom: 20px;
+.chat_button_parent {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 2;
 }
+
+    .chat_button_parent:hover {
+        cursor: pointer;
+        opacity: 0.8;
+        transition: 0.3s;
+    }
+
+.chat_button {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    border-radius: 50%;
+    padding: 15px 18px;
+    color: #fff;
+    font-size: 24px;
+    text-align: center;
+}
+
+.chat_notif {
+    background: #00b8ff;
+    display: inline-block;
+    font-weight: 900;
+    color: #fff !important;
+    padding: 1px 5px;
+    border-radius: 50px;
+    font-size: 12px;
+    float: right;
+    margin-top: -62px;
+    border: 2px solid #f0f6f8;
+}
+
+.mobile_search {
+    display: none;
+}
+
+.story_container {
+    width: 150px;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 15px;
+    box-shadow: 0px 19px 25px -23px rgba(0,0,0,0.4);
+}
+
+    .story_container.one {
+        background: url(https://cdn.pixabay.com/photo/2017/09/20/21/21/chihuahua-2769980__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.two {
+        background: url(https://cdn.pixabay.com/photo/2015/06/15/23/56/chihuahua-810789__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.three {
+        background: url(https://cdn.pixabay.com/photo/2021/11/20/13/24/chihuahua-6811805__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.four {
+        background: url(https://cdn.pixabay.com/photo/2017/08/29/12/13/dogs-2693074__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.five {
+        background: url(https://cdn.pixabay.com/photo/2013/09/01/09/50/animal-178024__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.six {
+        background: url(https://cdn.pixabay.com/photo/2017/05/22/05/36/chihuahua-2333176__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.six {
+        background: url(https://cdn.pixabay.com/photo/2019/01/28/19/18/chihuahua-3961095__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.seven {
+        background: url(https://cdn.pixabay.com/photo/2017/09/07/17/48/chihuahua-2726117__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.eight {
+        background: url(https://cdn.pixabay.com/photo/2019/02/10/19/54/chihuahua-3988105__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .story_container.you {
+        background: url(https://cdn.pixabay.com/photo/2021/08/02/12/39/boston-terrier-6516656__340.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.4;
+    }
+
+.story_avatar {
+    width: 30px !important;
+    height: 30px !Important;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    padding: 3px;
+    opacity: 0.8;
+}
+
+#plus_icon_story {
+    position: absolute;
+    bottom: 7px;
+    left: 7px;
+    color: #fff;
+    font-size: 30px;
+}
+
+
+.stories {
+    white-space: nowrap;
+    overflow: hidden;
+    padding-bottom: 30px;
+}
+
+.story_container:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.post_content {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.link {
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .link:hover {
+        opacity: 0.7;
+    }
+
+.group_img {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    float: left;
+    object-fit: cover;
+}
+
+#group {
+    margin-bottom: 40px !important;
+}
+
+.group_name {
+    position: relative;
+    left: 10px;
+    top: 10px;
+}
+
+.friend_row {
+    margin-top: 25px;
+    clear: both;
+}
+
+.online_status {
+    left: -9px;
+    display: inline-block;
+    bottom: -15px;
+    position: relative;
+    font-size: 12px;
+    color: #aaa;
+    border: 2px solid #001f2b;
+    border-radius: 50%;
+    background: #001f2b;
+}
+
+    .online_status.active {
+        color: #3FC08C !important;
+    }
+
+.friend_row:hover {
+    opacity: 0.7;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.friend_avatar {
+    width: 30px !important;
+    height: 30px !important;
+}
+
+.friend_name {
+    display: inline-block;
+    position: relative;
+    top: 8px;
+}
+
+.user-welcomer {
+    margin-left: 20px;
+    display: inline-block;
+}
+
+    .user-welcomer .username {
+        font-size: 30px;
+        font-weight: 900;
+    }
+
+.username {
+    color: #fff;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    float: left;
+    cursor: pointer;
+}
+
+.sidebar-container {
+    font-family: 'Roboto', sans-serif;
+    width: 300px;
+    padding: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: #001f2b;
+    color: rgba(255,255,255,0.8);
+    box-shadow: 11px 0px 50px -3px rgba(52,73,94,0.2);
+    overflow: hidden;
+}
+
+.sidebar-content {
+    overflow-y: auto;
+    height: 90%;
+    overflow-x: hidden;
+}
+
+.seperator {
+    border-bottom: 1px solid #fff;
+    opacity: 0.08;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+
+
+.page_content {
+    margin-left: 380px;
+    margin-right: 80px;
+    margin-top: 50px;
+}
+
+.gallery_img {
+    width: 100%;
+    height: 300px !important;
+    object-fit: cover;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 20px;
+    width: 28%;
+    border-radius: 5px;
+}
+
+    .gallery_img:hover {
+        opacity: 0.6;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+
+.new_status {
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0px 7px 14px -12px rgba(0,0,0,0.1);
+}
+
+    .new_status textarea {
+        width: 80%;
+        border: none;
+        font-family: 'Roboto', sans-serif;
+        padding-left: 20px;
+        resize: none;
+        display: inline-block;
+    }
+
+textarea:focus, input:focus {
+    outline: none;
+}
+
+.post_container {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 7px 14px -12px rgba(0,0,0,0.1);
+}
+
+small {
+    opacity: 0.6;
+}
+
+img {
+    max-width: 100%;
+    height: 100%;
+}
+
+.border-r {
+    border-radius: 5px;
+}
+
+.loading i {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.loading {
+    font-size: 13px;
+    opacity: 0.5;
+}
+
+.reacts {
+    margin-top: 10px;
+    border-top: 1px solid #fafafa;
+    padding-top: 10px;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+    .reacts i {
+        color: #00b8ff;
+    }
+
+        .reacts i:hover {
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+.notifs {
+    background: #00b8ff;
+    display: inline-block;
+    font-weight: 900;
+    color: #fff !important;
+    padding: 1px 5px;
+    border-radius: 50px;
+    font-size: 12px;
+    margin-left: -7px;
+}
+
+.user-buttons {
+    margin-top: 5px;
+    color: #fff;
+}
+
+    .user-buttons i:hover, #notifs:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+
+.logo {
+    font-size: 30px;
+    font-weight: 900;
+    color: #00b8ff;
+    float: left;
+}
+
+    .logo:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+
+.logo-book {
+    font-weight: 300 !important;
+}
+
+.header {
+    background: #fff;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    padding: 10px 0px;
+    box-shadow: 0px 7px 14px -12px rgba(0,0,0,0.1);
+}
+
+.header_content {
+    margin-left: 340px;
+}
+
+.header_search {
+    background: #ebf0f1;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 25%;
+    margin-left: 20px;
+    box-sizing: border-box;
+}
+
+#searchicon {
+    margin-left: -28px;
+    margin-top: 9px;
+    opacity: 0.4;
+    position: absolute;
+    cursor: pointer;
+}
+
+.new_status i {
+    margin-right: 20px;
+    color: #00b8ff;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+    .new_status i:hover {
+        opacity: 0.6;
+        cursor: pointer;
+    }

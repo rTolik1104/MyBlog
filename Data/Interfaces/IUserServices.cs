@@ -1,4 +1,5 @@
-﻿using MyBlog.Models;
+﻿using Microsoft.AspNetCore.Http;
+using MyBlog.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,7 @@ namespace MyBlog.Data.Interfaces
         IEnumerable<AppUser> GetAll();
         IEnumerable<AppUser> GetFilterd(string search);
 
-
-        Task SetProfileImg(string id, Uri uri);
-        Task Update(string id,AppUser appUser);
+        Task Update(AppUser appUser);
+        string SetProfileImg(IFormFile file);
     }
 }

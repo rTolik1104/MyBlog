@@ -2,7 +2,7 @@
 
 <head>
     <title>Profile Details</title>
-    <link rel="stylesheet" href="~/css/StyleSheet1.css" />
+    <link rel="stylesheet" href="~/css/StyleSheetUser.css" />
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
 </head>
 <body>
@@ -82,7 +82,7 @@
                             <h6 class="mb-0">Profile Picture URL</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            @Model.ProfileImgUrl
+                            @Model.ProfileImgName
                         </div>
                     </div>
                     <hr>
@@ -104,14 +104,6 @@
                         </div>
                     </div>
                     <hr />
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h6 class="mb-0">About</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            @Model.AboutTitle
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -125,14 +117,18 @@
                 <div class="card-body">
                     @if (Model.Friends.Count != 0)
                     {
+                        string imagePath = "";
                         @foreach (var f in Model.Friends)
                         {
+                            if (f.ProfileImgUrl != null)
+                            {
+                                imagePath = "/Images/" + f.ProfileImgUrl;
+                            }
                             <div class="customer">
                                 <div class="info">
-                                    <img src="@f.ProfileImgUrl" width="40px" height="40px" />
+                                    <img src="@imagePath" width="40px" height="50px" />
                                     <div>
                                         <h4>@f.UserName</h4>
-                                        <small>CEO Expert</small>
                                     </div>
                                 </div>
                                 <div class="contact">

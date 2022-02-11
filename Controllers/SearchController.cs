@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using MyBlog.Data;
 using MyBlog.Data.Interfaces;
 using MyBlog.Models;
-using MyBlog.ViewModels;
-using MyBlog.ViewModels.PostsModel;
+using MyBlog.ViewModels.Profile;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,63 +24,33 @@ namespace MyBlog.Controllers
             _friendServices = friendServices;
         }
 
-        public IActionResult Index(string searchString)
+        public async Task<IActionResult> Index(string? searchString)
         {
-            var users = _dbContext.Users.ToList();
+            var user = _userManager.GetUserAsync(User).Result;
+
+            var users = _dbContext.Users.Select(u => new ProfileVM
+            {
+                UserId = u.Id,
+                UserName = u.UserName,
+                Email = u.Email,
+                ProfileImgName = u.ProfileImgUrl,
+                MemberScine = u.MemberScine,
+                isFriend = _friendServices.IsFriend(u),
+                PhoneNumber = u.PhoneNumber,
+                About = u.About,
+                AboutTitle = u.AboutTitle
+            }).ToList();
+
             if (!String.IsNullOrEmpty(searchString))
             {
-                users = users.Where(u => u.UserName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) || u.Email.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            }
-            return View(users);
-        }
-
-        public async Task<IActionResult> Posts(string searchString)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            var posts = new List<Post>();
-            posts = _friendServices.GetFriendsPosts(user.Id).ToList();
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                posts = posts.Where(u => u.Description.Contains(searchString) || u.Title.Contains(searchString) || u.User.UserName.Contains(searchString)).ToList();
+                users = users.Where(u => u.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase) || u.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            var postList = posts.Select(p => new PostListVM
+            var model = new ProfileListVM
             {
-                Id = p.Id,
-                Title = p.Title,
-                Authorid = p.User.Id,
-                AuthorImage = p.User.ProfileImgUrl,
-                AuthorName = p.User.UserName,
-                PostContent = p.Description,
-                PostPictureUrl = p.PostPictureUrl,
-                DatePosted = p.Created.ToString(),
-                RepliesCount = p.PostReplies.Count(),
-                LikesCount = p.LikesCount,
-                PostReplies = BuildPostReplies(p.PostReplies)
-            });
-
-            var model = new PostIndexVM
-            {
-                Posts = postList.ToList()
+                Profiles = users,
             };
-
             return View(model);
-        }
-
-        private IEnumerable<PostReplyModel> BuildPostReplies(IEnumerable<PostReply> postReplies)
-        {
-            return postReplies.Select(r => new PostReplyModel
-            {
-                Id = r.Id,
-                PostContent = r.Content,
-                DatePosted = r.Created.ToString(),
-                LikesCount = r.LikesCount,
-                AuthorName = r.User.UserName,
-                AuthorId = r.User.Id,
-                AuthorImage = r.User.ProfileImgUrl
-            });
         }
     }
 }

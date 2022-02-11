@@ -3,8 +3,9 @@
 <div class="row">
     @foreach (var item in Model.Posts)
     {
+        string imagePath = "/Images/" + item.PostPictureUrl;
         <div class="card" style="width: 18rem;margin-right:10px">
-            <img class="card-img-top" src="@item.PostPictureUrl" alt="Card image cap">
+            <img class="card-img-top" src="@imagePath" alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title text-center">@item.Title</h5>
                 <div class="float-md-right">
